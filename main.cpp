@@ -145,3 +145,45 @@ char getValidYesNo(const string& prompt) {
         cout << "Please type Y or N.\n";
     }
 }
+// =====================================================================
+// PART 4: OUTPUT  (everything the user sees as results)
+// =====================================================================
+
+void showWelcome() {
+    cout << "=============================================\n";
+    cout << "        VPN ADVISOR & COST CALCULATOR\n";
+    cout << "=============================================\n";
+}
+
+// Step C: if / else if chain
+void showLegalWarning(int country, int purpose) {
+    cout << "\n--- Legal check ---\n";
+    if (country == CHINA)
+        cout << "WARNING: In China, only state-licensed VPNs are allowed.\n";
+    else if (country == RUSSIA)
+        cout << "WARNING: In Russia, unauthorised VPNs have been banned since 2017.\n";
+    else if (country == IRAN)
+        cout << "WARNING: In Iran, a permit is required to use a VPN.\n";
+    else
+        cout << "No major VPN restrictions on record.\n";
+
+    if (isRestricted(country) && purpose == PRIVACY)
+        cout << "EXTRA WARNING: Using a VPN to bypass censorship here carries a high legal risk.\n";
+}
+
+void printSummary(const string& name, const Recommendation& rec,
+                  int months, int devices) {
+    cout << "\n=============================================\n";
+    cout << "Hello, " << name << "! Here is your result.\n";
+    cout << "=============================================\n";
+    cout << "Recommended protocol : " << rec.protocol << "\n";
+    cout << "Why                  : " << rec.reason << "\n";
+    cout << "---------------------------------------------\n";
+    cout << "Base price per month : " << formatRM(BASE_PRICE_SEN) << "\n";
+    cout << "Plan discount        : " << discountPercent(months) << "%\n";
+    cout << "Extra device fee     : " << formatRM(extraDeviceFeeSen(devices)) << " per month\n";
+    cout << "Monthly price        : " << formatRM(monthlyPriceSen(months, devices)) << "\n";
+    cout << "Total for " << months << " month(s)  : "
+         << formatRM(totalPriceSen(months, devices)) << "\n";
+    cout << "=============================================\n\n";
+}
