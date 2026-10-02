@@ -1,3 +1,17 @@
+// =====================================================================
+// VPN Advisor & Cost Calculator  (single-file version)
+// LDCW6123 - Group Project (Trimester 2620)
+//
+// The file is split into 5 labelled parts, from top to bottom:
+//   PART 1: Settings (prices, limits, menu names)
+//   PART 2: Logic    (protocol choice + cost maths, no cin/cout)
+//   PART 3: Input    (asking the user + checking answers)
+//   PART 4: Output   (warnings + final summary)
+//   PART 5: main()   (the program loop)
+//
+// Build:  g++ -std=c++17 -Wall -Wextra -o vpn main.cpp
+// =====================================================================
+
 #include <iostream>
 #include <string>
 #include <limits>
@@ -145,6 +159,7 @@ char getValidYesNo(const string& prompt) {
         cout << "Please type Y or N.\n";
     }
 }
+
 // =====================================================================
 // PART 4: OUTPUT  (everything the user sees as results)
 // =====================================================================
@@ -186,4 +201,40 @@ void printSummary(const string& name, const Recommendation& rec,
     cout << "Total for " << months << " month(s)  : "
          << formatRM(totalPriceSen(months, devices)) << "\n";
     cout << "=============================================\n\n";
+}
+
+// =====================================================================
+// PART 5: MAIN  (ties everything together in the repeat loop)
+// =====================================================================
+
+int main() {
+    showWelcome();
+    string name = getName();          // ask the name first, before any "cin >>"
+    char again;
+
+    do {
+        cout << "\nWhat do you mainly want a VPN for?\n"
+             << "  1 Remote work\n  2 Streaming\n  3 Public Wi-Fi\n"
+             << "  4 Privacy / bypass censorship\n  5 Gaming\n";
+        int purpose = getValidInt("Purpose (1-5): ", 1, 5);
+
+        cout << "\nWhich country are you in?\n"
+             << "  1 Malaysia\n  2 China\n  3 Russia\n  4 Iran\n  5 Other\n";
+        int country = getValidInt("Country (1-5): ", 1, 5);
+
+        cout << "\nMain device?\n  1 Phone\n  2 Laptop/PC\n  3 Router\n";
+        int device = getValidInt("Device (1-3): ", 1, 3);
+
+        int months  = getValidPlan();
+        int devices = getValidInt("Number of devices (1-10): ", 1, MAX_DEVICES);
+
+        Recommendation rec = recommendProtocol(purpose, device);
+        showLegalWarning(country, purpose);
+        printSummary(name, rec, months, devices);
+
+        again = getValidYesNo("Check another option? (Y/N): ");
+    } while (again == 'Y');
+
+    cout << "Goodbye, " << name << "!\n";
+    return 0;
 }
