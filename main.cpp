@@ -85,3 +85,63 @@ string formatRM(int sen) {
     if (sen % 100 < 10) cents = "0" + cents;
     return "RM" + to_string(sen / 100) + "." + cents;
 }
+
+// =====================================================================
+// PART 3: INPUT  (every function keeps asking until the answer is valid)
+// =====================================================================
+
+string getName() {
+    string name;
+    while (true) {
+        cout << "Enter your name: ";
+        if (!getline(cin, name)) {            // input ended (Ctrl+D / end of file)
+            cout << "\nInput closed.\n";
+            exit(1);
+        }
+        if (!name.empty()) return name;
+        cout << "Name cannot be empty.\n";
+    }
+}
+
+int getValidInt(const string& prompt, int min, int max) {
+    int value;
+    while (true) {
+        cout << prompt;
+        if (cin >> value && value >= min && value <= max) {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');  // throw away rest of line
+            return value;
+        }
+        if (cin.eof()) {                      // stops infinite loop when input runs out
+            cout << "\nInput closed.\n";
+            exit(1);
+        }
+        cin.clear();                          // 1) reset the "fail" state
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');  // 2) throw away the bad line
+        cout << "Invalid choice. Please enter a number from "
+             << min << " to " << max << ".\n";
+    }
+}
+
+int getValidPlan() {
+    int months;
+    do {
+        months = getValidInt("Plan length in months (1, 12 or 24): ", 1, 24);
+        if (months != 1 && months != 12 && months != 24)
+            cout << "Only 1, 12 or 24 months are available.\n";
+    } while (months != 1 && months != 12 && months != 24);
+    return months;
+}
+
+char getValidYesNo(const string& prompt) {
+    string line;
+    while (true) {
+        cout << prompt;
+        if (!getline(cin, line)) {
+            cout << "\nInput closed.\n";
+            exit(1);
+        }
+        if (line == "Y" || line == "y") return 'Y';
+        if (line == "N" || line == "n") return 'N';
+        cout << "Please type Y or N.\n";
+    }
+}
